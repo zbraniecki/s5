@@ -1,0 +1,34 @@
+.transition_dissolve {
+  opacity: 0;
+  -moz-transition: opacity 1s ease;
+  display: block;
+}
+
+
+.transition_dissolve.active {
+    opacity: 1.0;
+}
+
+.transition_wipe {
+  /*clip:rect(0px,auto,auto,500px);
+  box-shadow: -1em 0px 0.4 #888;
+  */left: -100%; 
+  -moz-transition: left 1s ease;
+  display: block;
+  z-index: 3;
+}
+
+.transition_wipe.active {
+  left: 0%;
+  z-index: 5; 
+}
+
+.transition_wipe.prev {
+  left: 100%;
+  z-index: 4;
+}
+
+.transition_wipe.next {
+  left: -100%;
+  z-index: 6;
+}

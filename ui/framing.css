@@ -1,0 +1,29 @@
+
+/* Masters */
+
+/* Title & Subtitle */
+
+.slide.master_ts {
+  text-align: center;
+}
+
+.slide.master_ts > h1 {
+  display: inline-block;
+  margin-top: 250px;
+}
+
+.slide.master_ts > h2 {
+}
+
+/* Title & Bullets */
+
+.slide.master_tb {
+}
+
+.slide.master_tb > h1 {
+  padding: 1em;
+}
+
+.slide.master_tb > ul {
+  margin: 2em;
+}
