@@ -15,7 +15,6 @@ h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
 }
 
 .slide.active {
@@ -31,4 +30,12 @@ ol#presentation > li {
   list-style-type: none;
   padding: 0;
   margin: 0;
+}
+
+.slide * {
+  visibility: hidden;
+}
+
+.slide .active {
+  visibility: visible;
 }

@@ -14,7 +14,6 @@
   box-shadow: -1em 0px 0.4 #888;
   */left: -100%; 
   -moz-transition: left 1s ease;
-  display: block;
   z-index: 3;
 }
 
@@ -26,9 +25,11 @@
 .transition_wipe.prev {
   left: 100%;
   z-index: 4;
+  display: block;
 }
 
 .transition_wipe.next {
   left: -100%;
   z-index: 6;
+  display: block;
 }

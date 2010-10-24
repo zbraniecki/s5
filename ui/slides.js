@@ -10,7 +10,7 @@ S5.prototype = {
     document.addEventListener('click', function() {
       self.goFwd();
     }, true);
-    document.addEventListener('keypress', function(e) {
+    document.addEventListener('keyup', function(e) {
       var key = e.keyCode;
       var blockDefault = true;
       switch (key) {
@@ -28,10 +28,12 @@ S5.prototype = {
     }, true);
   },
   goFwd: function() {
-    this.transitToNextSlide();
+    if (!this.currentSlide.goFwd())
+      this.transitToNextSlide();
   },
   goBack: function() {
-    this.transitToPrevSlide();
+    if (!this.currentSlide.goBack())
+      this.transitToPrevSlide();
   },
   transitToPrevSlide: function() {
     var n = this.currentSlide.nr-1;
@@ -118,14 +120,87 @@ S5.prototype = {
 
 S5.transitions = {}
 
-var Slide = function (node, i) {
+var Element = function(node, i) {
   this.node = node;
   this.nr = i;
+  this.elements = [];
+  this.steps = [];
+  this.process();
+}
+
+Element.prototype = {
+  node: null,
+  nr: null,
+  elements: null,
+  steps: null,
+  currentStep: -1,
+  removeClass: function(className) {
+	this.node.className = this.node.className.replace(new RegExp('(^|\\s)'+className+'(\\s|$)'), RegExp.$1+RegExp.$2);
+  },
+  addClass: function(className) {
+	if (this.node.className) {
+		this.node.className += ' '+className;
+	} else {
+		this.node.className = className;
+	}
+  },
+  goFwd: function() {
+    if (this.steps.length==0)
+      return false;
+    if (this.currentStep<0)
+      return this.transitToNextStep();
+    if (!this.steps[this.currentStep].goFwd())
+      return this.transitToNextStep();
+    return true;
+  },
+  goBack: function() {
+    if (this.steps.length==0)
+      return false;
+    if (this.currentStep==-1)
+      return false;
+    if (!this.steps[this.currentStep].goBack())
+      return this.transitToPrevStep();
+    return true;
+  },
+  transitToNextStep: function() {
+    if(this.currentStep<this.steps.length-1) {
+      this.currentStep+=1;
+      this.steps[this.currentStep].addClass('active');
+      return true;
+    } else
+      return false; 
+  },
+  transitToPrevStep: function() {
+    if (this.currentStep>=0) {
+      this.steps[this.currentStep].removeClass('active');
+      this.currentStep-=1;
+      return true;
+    } else
+      return false;
+  },
+  process: function() {
+    var nodes = this.node.children;
+    for(var i=0;i<nodes.length;i++)
+      this.elements.push(new Element(nodes[i], i))
+    for(i in this.elements)
+      this.steps.push(this.elements[i]);
+  },
+}
+
+var Slide = function(node, i) {
+  this.node = node;
+  this.nr = i;
+  this.elements = [];
+  this.steps = [];
+  this.process();
 }
 
 Slide.prototype = {
   node: null,
   nr: null,
+  elements: null,
+  steps: null,
+  currentStep: -1,
   removeClass: function(className) {
 	this.node.className = this.node.className.replace(new RegExp('(^|\\s)'+className+'(\\s|$)'), RegExp.$1+RegExp.$2);
   },
@@ -138,7 +213,43 @@ Slide.prototype = {
   },
   hasClass: function(name) {
   },
- 
+  goFwd: function() {
+    if (this.currentStep<0)
+      return this.transitToNextStep();
+    if (!this.steps[this.currentStep].goFwd())
+      return this.transitToNextStep();
+    return true;
+  },
+  goBack: function() {
+    if (this.currentStep<0)
+      return false;
+    if (!this.steps[this.currentStep].goBack())
+      return this.transitToPrevStep();
+    return true;
+  },
+  transitToNextStep: function() {
+    if (this.currentStep<this.steps.length-1) {
+      this.currentStep+=1;
+      this.steps[this.currentStep].addClass('active');
+      return true;
+    } else
+      return false; 
+  },
+  transitToPrevStep: function() {
+    if (this.currentStep>=0) {
+      this.steps[this.currentStep].removeClass('active');
+      this.currentStep-=1;
+      return true;
+    } else
+      return false;
+  },
+  process: function() {
+    var nodes = this.node.children;
+    for(var i=0;i<nodes.length;i++)
+      this.elements.push(new Element(nodes[i], i))
+    for(i in this.elements)
+      this.steps.push(this.elements[i]);
+  }, 
 }
 
 var s5 = new S5();
