@@ -2,18 +2,8 @@ var S5 = function() {
 }
 
 S5.prototype = {
-  currentSlide: {'nr': null, 'handler': null},
-
-  removeClass: function(object, className) {
-	object.className = object.className.replace(new RegExp('(^|\\s)'+className+'(\\s|$)'), RegExp.$1+RegExp.$2);
-  },
-  addClass: function(object, className) {
-	if (object.className) {
-		object.className += ' '+className;
-	} else {
-		object.className = className;
-	}
-  },
+  currentSlide: null,
+  slides: [],
 
   bindInput: function() {
     var self = this;
@@ -44,49 +34,50 @@ S5.prototype = {
     this.transitToPrevSlide();
   },
   transitToPrevSlide: function() {
-    var slides = document.getElementsByClassName('slide');
     var n = this.currentSlide.nr-1;
     if (n<0)
       return;
     this.transitToSlide(n, -1);
   },
   transitToNextSlide: function() {
-    var slides = document.getElementsByClassName('slide');
-    var n = this.currentSlide.nr !== null?this.currentSlide.nr+1:0;
-    if (n>=slides.length)
+    var n = this.currentSlide !== null?this.currentSlide.nr+1:0;
+    if (n>=this.slides.length)
       return;
     this.transitToSlide(n, 1);
   },
   transitToSlide: function(i, dir) {
-    var slides = document.getElementsByClassName('slide');
+    var slide = this.slides[i];
     this.transition.transitToSlide(i, this);
     if (this.transition.defaultAction) {
-      if (this.currentSlide.nr !== null) {
-        this.removeClass(this.currentSlide.handler, 'active');
+      if (this.currentSlide !== null) {
+        this.currentSlide.removeClass('active');
         if (dir === 1) {
-          this.removeClass(slides[i], 'next');
+          slide.removeClass('next');
           if (i>1)
-            this.removeClass(slides[i-2], 'prev');
+            this.slides[i-2].removeClass('prev');
         }
         if (dir === -1) {
-          this.removeClass(slides[i], 'prev');
-          if (i<slides.length-2)
-            this.removeClass(slides[i+2], 'next');
+          slide.removeClass('prev');
+          if (i<this.slides.length-2)
+            this.slides[i+2].removeClass('next');
         }
       }
-      this.addClass(slides[i], 'active');
-      if (i<slides.length-1)
-        this.addClass(slides[i+1], 'next');
+      slide.addClass('active');
+      if (i<this.slides.length-1)
+        this.slides[i+1].addClass('next');
       if (i>0)
-        this.addClass(slides[i-1], 'prev');
+        this.slides[i-1].addClass('prev');
     }
-    this.currentSlide.nr = i;
-    this.currentSlide.handler = slides[i];
+    this.currentSlide = this.slides[i];
   },
-  setDefaultTransitionForSlide: function(name) {
+  processSlides: function() {
     var slides = document.getElementsByClassName('slide');
-    for (var i in slides) {
-      this.addClass(slides[i], 'transition_'+name);
+    for (var i=0;i<slides.length;i++)
+      this.slides.push(new Slide(slides[i], i));
+    },
+  setDefaultTransitionForSlide: function(name) {
+    for (var i in this.slides) {
+      this.slides[i].addClass('transition_'+name);
     }
   },
   setParams: function() {
@@ -113,6 +104,7 @@ S5.prototype = {
   startup: function() {
     this.setMode();
     this.bindInput();
+    this.processSlides();
     this.setParams();
     this.transitToNextSlide();
   },
@@ -125,6 +117,29 @@ S5.prototype = {
 }
 
 S5.transitions = {}
+
+var Slide = function (node, i) {
+  this.node = node;
+  this.nr = i;
+}
+
+Slide.prototype = {
+  node: null,
+  nr: null,
+  removeClass: function(className) {
+	this.node.className = this.node.className.replace(new RegExp('(^|\\s)'+className+'(\\s|$)'), RegExp.$1+RegExp.$2);
+  },
+  addClass: function(className) {
+	if (this.node.className) {
+		this.node.className += ' '+className;
+	} else {
+		this.node.className = className;
+	}
+  },
+  hasClass: function(name) {
+  },
+ 
+}
 
 var s5 = new S5();
 s5.boot();
