@@ -32,10 +32,14 @@ ol#presentation > li {
   margin: 0;
 }
 
-.slide * {
+.slide .buildin {
   visibility: hidden;
 }
 
 .slide .active {
   visibility: visible;
+}
+
+.slide > .notes {
+  display: none;
 }

@@ -7,7 +7,7 @@ S5.prototype = {
 
   bindInput: function() {
     var self = this;
-    document.addEventListener('click', function() {
+    document.addEventListener('click', function(e) {
       self.goFwd();
     }, true);
     document.addEventListener('keyup', function(e) {
@@ -23,8 +23,10 @@ S5.prototype = {
         default:
           blockDefault = false;
       }
-      if (blockDefault)
-        e.preventDefault(); 
+      if (blockDefault) {
+        e.stopPropagation();
+        e.preventDefault();
+      } 
     }, true);
   },
   goFwd: function() {
@@ -71,6 +73,7 @@ S5.prototype = {
         this.slides[i-1].addClass('prev');
     }
     this.currentSlide = this.slides[i];
+    //this.currentSlide.goFwd();
   },
   processSlides: function() {
     var slides = document.getElementsByClassName('slide');
@@ -106,6 +109,8 @@ S5.prototype = {
   startup: function() {
     this.setMode();
     this.bindInput();
+    if (document.getElementsByClassName('incremental').length)
+      this.convert(document.getElementsByClassName('presentation')[0]);
     this.processSlides();
     this.setParams();
     this.transitToNextSlide();
@@ -115,17 +120,30 @@ S5.prototype = {
     window.addEventListener('load', function() {
       self.startup();
     }, true);
+  },
+  convert: function(node) {
+    var nodes = node.children;
+    for(var i=0;i<nodes.length;i++) {
+      if (nodes[i].className.indexOf('incremental')!==-1) {
+        //nodes.removeClass('incremental');
+        for (var j=0;j<nodes[i].children.length;j++) {
+          nodes[i].children[j].className="buildin";
+        }
+      }
+      this.convert(nodes[i]);
+    }
   }
 }
 
 S5.transitions = {}
 
-var Element = function(node, i) {
+var Element = function(node, i, proc) {
   this.node = node;
   this.nr = i;
   this.elements = [];
   this.steps = [];
-  this.process();
+  if (proc)
+    this.process();
 }
 
 Element.prototype = {
@@ -143,6 +161,10 @@ Element.prototype = {
 	} else {
 		this.node.className = className;
 	}
+  },
+  hasClass: function(className) {
+	if (!this.node.className) return false;
+	return (this.node.className.search('(^|\\s)' + className + '(\\s|$)') != -1);
   },
   goFwd: function() {
     if (this.steps.length==0)
@@ -165,10 +187,14 @@ Element.prototype = {
   transitToNextStep: function() {
     if(this.currentStep<this.steps.length-1) {
       this.currentStep+=1;
-      this.steps[this.currentStep].addClass('active');
+      if (this.steps[this.currentStep].hasClass('buildin'))
+        this.steps[this.currentStep].addClass('active');
+      else
+        return this.steps[this.currentStep].goFwd();
       return true;
-    } else
-      return false; 
+    } else {
+      return false;
+    } 
   },
   transitToPrevStep: function() {
     if (this.currentStep>=0) {
@@ -179,77 +205,44 @@ Element.prototype = {
       return false;
   },
   process: function() {
+    if(!this.node)return;
     var nodes = this.node.children;
-    for(var i=0;i<nodes.length;i++)
-      this.elements.push(new Element(nodes[i], i))
-    for(i in this.elements)
+    for(var i=0;i<nodes.length;i++) {
+      var elem = new Element(nodes[i], i, true); 
+      this.elements.push(elem)
+    }
+    for(i in this.elements) {
+      if (this.elements[i].hasClass('buildin') ||
+          this.elements[i].steps.length > 0)
       this.steps.push(this.elements[i]);
+    }
   },
 }
 
 var Slide = function(node, i) {
-  this.node = node;
-  this.nr = i;
-  this.elements = [];
-  this.steps = [];
+  Element.call(this, node, i, false);
+  this.node.setAttribute('id', 'slide'+i);
   this.process();
 }
 
-Slide.prototype = {
-  node: null,
-  nr: null,
-  elements: null,
-  steps: null,
-  currentStep: -1,
-  removeClass: function(className) {
-	this.node.className = this.node.className.replace(new RegExp('(^|\\s)'+className+'(\\s|$)'), RegExp.$1+RegExp.$2);
-  },
-  addClass: function(className) {
-	if (this.node.className) {
-		this.node.className += ' '+className;
-	} else {
-		this.node.className = className;
-	}
-  },
-  hasClass: function(name) {
-  },
-  goFwd: function() {
-    if (this.currentStep<0)
-      return this.transitToNextStep();
-    if (!this.steps[this.currentStep].goFwd())
-      return this.transitToNextStep();
-    return true;
-  },
-  goBack: function() {
-    if (this.currentStep<0)
-      return false;
-    if (!this.steps[this.currentStep].goBack())
-      return this.transitToPrevStep();
-    return true;
-  },
-  transitToNextStep: function() {
-    if (this.currentStep<this.steps.length-1) {
-      this.currentStep+=1;
-      this.steps[this.currentStep].addClass('active');
-      return true;
-    } else
-      return false; 
-  },
-  transitToPrevStep: function() {
-    if (this.currentStep>=0) {
-      this.steps[this.currentStep].removeClass('active');
-      this.currentStep-=1;
-      return true;
-    } else
-      return false;
-  },
-  process: function() {
+Slide.prototype = new Element;
+Slide.prototype.constructor = Slide;
+
+Slide.prototype.notes = null;
+Slide.prototype.process = function() {
     var nodes = this.node.children;
-    for(var i=0;i<nodes.length;i++)
-      this.elements.push(new Element(nodes[i], i))
-    for(i in this.elements)
-      this.steps.push(this.elements[i]);
-  }, 
+    for(var i=0;i<nodes.length;i++) {
+      var elem = new Element(nodes[i], i, true);
+      if (elem.hasClass('notes'))
+        this.notes = elem;
+      else
+        this.elements.push(elem);
+    }
+    for(i in this.elements) {
+      if (this.elements[i].hasClass('buildin') ||
+          this.elements[i].steps.length > 0)
+        this.steps.push(this.elements[i]);
+    }
 }
 
 var s5 = new S5();
