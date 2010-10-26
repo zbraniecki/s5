@@ -40,6 +40,10 @@ ol#presentation > li {
   visibility: visible;
 }
 
+.slide .current {
+  border: 1px solid black;
+}
+
 .slide > .notes {
   display: none;
 }
