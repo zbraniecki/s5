@@ -4,7 +4,14 @@ var S5 = function() {
 S5.prototype = {
   currentSlide: null,
   slides: [],
+  currentStep: null,
 
+  setCurrentStep: function(node) {
+    if (this.currentStep)
+      this.currentStep.removeClass('current')
+    node.addClass('current')
+    this.currentStep = node;
+  },
   bindInput: function() {
     var self = this;
     document.addEventListener('click', function(e) {
@@ -78,7 +85,7 @@ S5.prototype = {
   processSlides: function() {
     var slides = document.getElementsByClassName('slide');
     for (var i=0;i<slides.length;i++)
-      this.slides.push(new Slide(slides[i], i));
+      this.slides.push(new Slide(slides[i], i, this));
     },
   setDefaultTransitionForSlide: function(name) {
     for (var i in this.slides) {
@@ -137,11 +144,18 @@ S5.prototype = {
 
 S5.transitions = {}
 
-var Element = function(node, i, proc) {
+var Element = function(node, i, parent, slide, s5, proc) {
   this.node = node;
   this.nr = i;
   this.elements = [];
   this.steps = [];
+  this.effects = {'buildin': null};
+  if (parent)
+    this.parent = parent;
+  if (slide)
+    this.slide = slide;
+  if (s5)
+    this.s5 = s5;
   if (proc)
     this.process();
 }
@@ -151,6 +165,10 @@ Element.prototype = {
   nr: null,
   elements: null,
   steps: null,
+  s5: null,
+  slide: null,
+  parent: null,
+  effects: null,
   currentStep: -1,
   removeClass: function(className) {
 	this.node.className = this.node.className.replace(new RegExp('(^|\\s)'+className+'(\\s|$)'), RegExp.$1+RegExp.$2);
@@ -165,6 +183,15 @@ Element.prototype = {
   hasClass: function(className) {
 	if (!this.node.className) return false;
 	return (this.node.className.search('(^|\\s)' + className + '(\\s|$)') != -1);
+  },
+  setCurrentStep: function() {
+    if (this.currentStep>-1) {
+      if (this.steps[this.currentStep].currentStep > -1)
+        this.steps[this.currentStep].setCurrentStep()
+      else
+        this.s5.setCurrentStep(this.steps[this.currentStep])
+    } else
+      this.parent.setCurrentStep();
   },
   goFwd: function() {
     if (this.steps.length==0)
@@ -187,20 +214,28 @@ Element.prototype = {
   transitToNextStep: function() {
     if(this.currentStep<this.steps.length-1) {
       this.currentStep+=1;
-      if (this.steps[this.currentStep].hasClass('buildin'))
+      if (this.steps[this.currentStep].effects['buildin']) {
         this.steps[this.currentStep].addClass('active');
-      else
-        return this.steps[this.currentStep].goFwd();
-      return true;
+        this.s5.setCurrentStep(this.steps[this.currentStep]);
+        return true;
+      } else {
+        return this.goFwd();
+      }
     } else {
       return false;
     } 
   },
   transitToPrevStep: function() {
     if (this.currentStep>=0) {
-      this.steps[this.currentStep].removeClass('active');
-      this.currentStep-=1;
-      return true;
+      if (this.steps[this.currentStep].effects['buildin']) {
+        this.steps[this.currentStep].removeClass('active');
+        this.currentStep-=1;
+        this.setCurrentStep();
+        return true;
+      } else {
+        this.currentStep-=1;
+        return this.goBack();
+      }
     } else
       return false;
   },
@@ -208,19 +243,29 @@ Element.prototype = {
     if(!this.node)return;
     var nodes = this.node.children;
     for(var i=0;i<nodes.length;i++) {
-      var elem = new Element(nodes[i], i, true); 
+      var elem = new Element(nodes[i], i, this, this.slide, this.s5, true); 
       this.elements.push(elem)
     }
     for(i in this.elements) {
-      if (this.elements[i].hasClass('buildin') ||
-          this.elements[i].steps.length > 0)
-      this.steps.push(this.elements[i]);
+      var elem = this.elements[i];
+      var style = document.defaultView.getComputedStyle(elem.node, null);
+      //if (elem.hasClass('buildin') ||
+      //    elem.steps.length > 0 ||
+      //    style.getPropertyValue('display')!='inline')
+      //this.steps.push(this.elements[i]);
+      
+      if (this.elements[i].hasClass('buildin')){
+        elem.effects['buildin'] = 'basic';
+        this.steps.push(this.elements[i]);
+      }else if (this.elements[i].steps.length > 0) {
+        this.steps.push(this.elements[i]);
+      }
     }
   },
 }
 
-var Slide = function(node, i) {
-  Element.call(this, node, i, false);
+var Slide = function(node, i, s5) {
+  Element.call(this, node, i, s5, this, s5, false);
   this.node.setAttribute('id', 'slide'+i);
   this.process();
 }
@@ -232,16 +277,20 @@ Slide.prototype.notes = null;
 Slide.prototype.process = function() {
     var nodes = this.node.children;
     for(var i=0;i<nodes.length;i++) {
-      var elem = new Element(nodes[i], i, true);
+      var elem = new Element(nodes[i], i, this, this, this.s5, true);
       if (elem.hasClass('notes'))
         this.notes = elem;
       else
         this.elements.push(elem);
     }
     for(i in this.elements) {
-      if (this.elements[i].hasClass('buildin') ||
-          this.elements[i].steps.length > 0)
+      var elem = this.elements[i];
+      if (this.elements[i].hasClass('buildin')){
+        elem.effects['buildin'] = 'basic';
         this.steps.push(this.elements[i]);
+      }else if (this.elements[i].steps.length > 0) {
+        this.steps.push(this.elements[i]);
+      }
     }
 }
 
