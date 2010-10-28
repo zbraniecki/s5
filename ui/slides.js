@@ -171,18 +171,13 @@ Element.prototype = {
   effects: null,
   currentStep: -1,
   removeClass: function(className) {
-	this.node.className = this.node.className.replace(new RegExp('(^|\\s)'+className+'(\\s|$)'), RegExp.$1+RegExp.$2);
+    this.node.classList.remove(className);
   },
   addClass: function(className) {
-	if (this.node.className) {
-		this.node.className += ' '+className;
-	} else {
-		this.node.className = className;
-	}
+    this.node.classList.add(className);
   },
   hasClass: function(className) {
-	if (!this.node.className) return false;
-	return (this.node.className.search('(^|\\s)' + className + '(\\s|$)') != -1);
+    return this.node.classList.contains(className);
   },
   setCurrentStep: function() {
     if (this.currentStep>-1) {
@@ -205,10 +200,17 @@ Element.prototype = {
   goBack: function() {
     if (this.steps.length==0)
       return false;
-    if (this.currentStep==-1)
+    if (this.currentStep===-1)
       return false;
     if (!this.steps[this.currentStep].goBack())
       return this.transitToPrevStep();
+    else {
+      if (this.steps[this.currentStep].currentStep==-1 &&
+          this.steps[this.currentStep].effects['buildin']==null) {
+        return this.transitToPrevStep();
+      }
+    }
+    this.setCurrentStep();
     return true;
   },
   transitToNextStep: function() {
@@ -216,7 +218,7 @@ Element.prototype = {
       this.currentStep+=1;
       if (this.steps[this.currentStep].effects['buildin']) {
         this.steps[this.currentStep].addClass('active');
-        this.s5.setCurrentStep(this.steps[this.currentStep]);
+        this.setCurrentStep();
         return true;
       } else {
         return this.goFwd();
@@ -227,15 +229,15 @@ Element.prototype = {
   },
   transitToPrevStep: function() {
     if (this.currentStep>=0) {
-      if (this.steps[this.currentStep].effects['buildin']) {
-        this.steps[this.currentStep].removeClass('active');
-        this.currentStep-=1;
-        this.setCurrentStep();
-        return true;
-      } else {
-        this.currentStep-=1;
-        return this.goBack();
-      }
+      this.currentStep-=1;
+      this.steps[this.currentStep+1].removeClass('active');
+      return true;
+      //if (this.steps[this.currentStep+1].effects['buildin']) {
+      //  this.setCurrentStep();
+      //  return true;
+      //} else {
+      //  return this.goBack();
+      // }
     } else
       return false;
   },
