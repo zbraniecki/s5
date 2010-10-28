@@ -136,6 +136,7 @@ S5.prototype = {
         for (var j=0;j<nodes[i].children.length;j++) {
           nodes[i].children[j].className="buildin";
         }
+        nodes[i].className="incremental buildin";
       }
       this.convert(nodes[i]);
     }
@@ -232,12 +233,6 @@ Element.prototype = {
       this.currentStep-=1;
       this.steps[this.currentStep+1].removeClass('active');
       return true;
-      //if (this.steps[this.currentStep+1].effects['buildin']) {
-      //  this.setCurrentStep();
-      //  return true;
-      //} else {
-      //  return this.goBack();
-      // }
     } else
       return false;
   },
