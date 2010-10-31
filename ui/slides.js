@@ -16,8 +16,12 @@ S5.prototype = {
     var self = this;
     document.addEventListener('click', function(e) {
       self.goFwd();
-    }, true);
+    }, false);
     document.addEventListener('keyup', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }, false);
+    document.addEventListener('keydown', function(e) {
       var key = e.keyCode;
       var blockDefault = true;
       switch (key) {
@@ -34,7 +38,7 @@ S5.prototype = {
         e.stopPropagation();
         e.preventDefault();
       } 
-    }, true);
+    }, false);
   },
   goFwd: function() {
     if (!this.currentSlide.goFwd())
@@ -132,11 +136,11 @@ S5.prototype = {
     var nodes = node.children;
     for(var i=0;i<nodes.length;i++) {
       if (nodes[i].className.indexOf('incremental')!==-1) {
-        //nodes.removeClass('incremental');
         for (var j=0;j<nodes[i].children.length;j++) {
           nodes[i].children[j].className="buildin";
         }
-        nodes[i].className="incremental buildin";
+        if (j==0)
+          nodes[i].className="incremental buildin";
       }
       this.convert(nodes[i]);
     }
@@ -246,11 +250,6 @@ Element.prototype = {
     for(i in this.elements) {
       var elem = this.elements[i];
       var style = document.defaultView.getComputedStyle(elem.node, null);
-      //if (elem.hasClass('buildin') ||
-      //    elem.steps.length > 0 ||
-      //    style.getPropertyValue('display')!='inline')
-      //this.steps.push(this.elements[i]);
-      
       if (this.elements[i].hasClass('buildin')){
         elem.effects['buildin'] = 'basic';
         this.steps.push(this.elements[i]);
