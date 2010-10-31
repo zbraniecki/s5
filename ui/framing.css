@@ -8,11 +8,30 @@
 }
 
 .slide.master_ts > h1 {
-  display: inline-block;
-  margin-top: 250px;
+  width: 80%;
+  height: 40%;
+  margin: 0 auto;
+  margin-top: 2em;
+    display: -moz-box;
+    -moz-box-pack: center;
+    -moz-box-align: end;
+
 }
 
 .slide.master_ts > h2 {
+  margin: 0 auto;
+  width: 80%;
+  height: 10%;
+  margin-top: 0.5em;
+  display: -moz-box;
+  -moz-box-pack: center;
+  -moz-box-align: start;
+  padding-top: 0.3em;
+}
+
+#presentation.debug > .slide.master_ts > h1,
+#presentation.debug > .slide.master_ts > h2{
+  border: 1px solid black;
 }
 
 /* Title & Bullets */
@@ -21,9 +40,36 @@
 }
 
 .slide.master_tb > h1 {
-  padding: 1em;
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 0.2em;
+  height: 20%;
 }
 
 .slide.master_tb > ul {
-  margin: 2em;
+  width: 80%;
+  margin: 0 auto;
+  padding: 0;
+  margin-top: 0.2em;
+  height: 70%;
 }
+
+.slide.master_tb > ul > li {
+  margin: 0;
+  margin-left: 2em;
+}
+
+#presentation.debug > .slide.master_tb > h1,
+#presentation.debug > .slide.master_tb > ul {
+  border: 1px solid black;
+}
+
+/* Title & Bullets - 2 Columns */
+
+/* Bullets */
+
+/* Blank */
+
+/* Title - Top */
+
+/* Title - Center */
