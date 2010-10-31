@@ -9,27 +9,26 @@
     opacity: 1.0;
 }
 
-.transition_wipe {
-  /*clip:rect(0px,auto,auto,500px);
-  box-shadow: -1em 0px 0.4 #888;
-  */left: -100%; 
+.transition_push {
+  left: -100%; 
   -moz-transition: left 1s ease;
   z-index: 3;
 }
 
-.transition_wipe.active {
+.transition_push.active {
   left: 0%;
   z-index: 5; 
 }
 
-.transition_wipe.prev {
+.transition_push.prev {
   left: 100%;
   z-index: 4;
   display: block;
 }
 
-.transition_wipe.next {
+.transition_push.next {
   left: -100%;
   z-index: 6;
   display: block;
 }
+

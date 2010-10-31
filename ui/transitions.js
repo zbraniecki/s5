@@ -10,8 +10,9 @@ S5.transitions.Dissolve = {
   }
 }
 
-S5.transitions.Wipe = {
+S5.transitions.Push = {
   defaultAction: true,
   transitToSlide: function(i, s5) {
   }
 }
+
