@@ -3,18 +3,22 @@
 <title>S5 example</title>
 <!-- configuration parameters -->
 <meta name="defaultView" content="slideshow" />
-<meta name="transition" content="basic" />
+<meta name="transition" content="dissolve" />
+<meta name="effect" content="dissolve" />
+<meta name="controls" content="true" />
 <!-- style sheet links -->
 <link rel="stylesheet" href="ui/slides.css" type="text/css" media="screen" id="slideProj" />
 <link rel="stylesheet" href="themes/mcs/pretty.css" type="text/css" id="theme" />
+<link rel="stylesheet" href="ui/controls.css" type="text/css" />
 <!-- S5 JS -->
 <script src="ui/slides.js" type="text/javascript"></script>
 <script src="ui/transitions.js" type="text/javascript"></script>
+<script src="ui/controls.js" type="text/javascript"></script>
 </head>
 <body>
-<ol id="presentation">
+<ol class="presentation">
   <li class="slide master_ts">
-    <h1>Title</h1>
+  <h1>Title</h1>
     <h2>subtitle</h2>
   </li>
   <li class="slide master_tb">
@@ -23,21 +27,13 @@
         <li>foo</li>
       <li class="buildin">fwfwe</li>
       <li class="buildin">
-      <ul>
-          <li>foo2</li>
-         <li>
-         <ul>
-             <li>foo3</li>
-             <li class="buildin">Bullet 3</li>
-           </ul>
-         </li>
-        </ul>
+      aa
       </li>
     </ul>
   </li>
   <li class="slide master_tb">
     <h1>Title</h1>
-    <ul class="buildin_dissolve">
+    <ul class="buildin">
       <li>Slide nr. 3</li>
       <li>Another step</li>
     </ul>

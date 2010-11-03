@@ -21,23 +21,15 @@ h1 {
   display: block;
 }
 
-ol#presentation {
+ol.presentation {
   padding: 0;
   margin: 0;
 }
 
-ol#presentation > li {
+ol.presentation > li {
   list-style-type: none;
   padding: 0;
   margin: 0;
-}
-
-.slide .buildin {
-  visibility: hidden;
-}
-
-.slide .active {
-  visibility: visible;
 }
 
 .slide > .notes {

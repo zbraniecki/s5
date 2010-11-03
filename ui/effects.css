@@ -1,0 +1,17 @@
+.slide .buildin_basic {
+  visibility: hidden;
+}
+
+.slide .buildin_basic.active {
+  visibility: visible;
+}
+
+.slide .buildin_dissolve {
+  opacity: 0;
+  visibility: visible;
+  -moz-transition: opacity 1s ease;
+}
+
+.slide .buildin_dissolve.active {
+  opacity: 1;
+}

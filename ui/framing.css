@@ -29,8 +29,8 @@
   padding-top: 0.3em;
 }
 
-#presentation.debug > .slide.master_ts > h1,
-#presentation.debug > .slide.master_ts > h2{
+.presentation.debug > .slide.master_ts > h1,
+.presentation.debug > .slide.master_ts > h2{
   border: 1px solid black;
 }
 
@@ -59,8 +59,8 @@
   margin-left: 2em;
 }
 
-#presentation.debug > .slide.master_tb > h1,
-#presentation.debug > .slide.master_tb > ul {
+.presentation.debug > .slide.master_tb > h1,
+.presentation.debug > .slide.master_tb > ul {
   border: 1px solid black;
 }
 

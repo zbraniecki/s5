@@ -5,6 +5,9 @@ S5.prototype = {
   currentSlide: null,
   slides: [],
   currentStep: null,
+  transition: null,
+  effect: null,
+  node: null,
 
   setCurrentStep: function(node) {
     if (this.currentStep)
@@ -84,7 +87,6 @@ S5.prototype = {
         this.slides[i-1].addClass('prev');
     }
     this.currentSlide = this.slides[i];
-    //this.currentSlide.goFwd();
   },
   processSlides: function() {
     var slides = document.getElementsByClassName('slide');
@@ -105,7 +107,19 @@ S5.prototype = {
         case 'transition':
           var str = allMetas[i].content;
           this.transition = S5.transitions[str.slice(0,1).toUpperCase() + str.slice(1)];
-          this.setDefaultTransitionForSlide(str);
+          break;
+        case 'effect':
+          var str = allMetas[i].content;
+          this.effect = str;
+          var list = document.getElementsByClassName('buildin');
+          for (var i=0;i<list.length;i++) {
+            list[i].classList.add('buildin_'+this.effect);
+          }
+          break;
+        case 'controls':
+          var str = allMetas[i].content;
+          this.controls = new ControlUI(this);
+          this.controls.inject(document.getElementsByClassName('presentation')[0]);
           break;
         case 'controlVis':
           break;
@@ -118,12 +132,13 @@ S5.prototype = {
     slides.disabled=false;
   },
   startup: function() {
+    this.node = document.getElementsByClassName('presentation')[0];
     this.setMode();
     this.bindInput();
-    if (document.getElementsByClassName('incremental').length)
-      this.convert(document.getElementsByClassName('presentation')[0]);
-    this.processSlides();
+    this.convert(this.node);
     this.setParams();
+    this.processSlides();
+    this.setDefaultTransitionForSlide(this.transition.name);
     this.transitToNextSlide();
   },
   boot: function() {
@@ -135,9 +150,9 @@ S5.prototype = {
   convert: function(node) {
     var nodes = node.children;
     for(var i=0;i<nodes.length;i++) {
-      if (nodes[i].className.indexOf('incremental')!==-1) {
+      if (nodes[i].classList.contains('incremental')) {
         for (var j=0;j<nodes[i].children.length;j++) {
-          nodes[i].children[j].className="buildin";
+          nodes[i].children[j].classList.add("buildin");
         }
         if (j==0)
           nodes[i].className="incremental buildin";
@@ -251,7 +266,7 @@ Element.prototype = {
       var elem = this.elements[i];
       var style = document.defaultView.getComputedStyle(elem.node, null);
       if (this.elements[i].hasClass('buildin')){
-        elem.effects['buildin'] = 'basic';
+        elem.effects['buildin'] = this.s5.effect;
         this.steps.push(this.elements[i]);
       }else if (this.elements[i].steps.length > 0) {
         this.steps.push(this.elements[i]);
@@ -282,7 +297,7 @@ Slide.prototype.process = function() {
     for(i in this.elements) {
       var elem = this.elements[i];
       if (this.elements[i].hasClass('buildin')){
-        elem.effects['buildin'] = 'basic';
+        elem.effects['buildin'] = this.s5.effect;
         this.steps.push(this.elements[i]);
       }else if (this.elements[i].steps.length > 0) {
         this.steps.push(this.elements[i]);

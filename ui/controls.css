@@ -1,0 +1,45 @@
+.control_panel {
+  width: 60%;
+  height: 10%;
+  position: fixed;
+  bottom: 5%;
+  left: 50%;
+  margin-left: -30%;
+  z-index: 100;
+  background-color: rgba(120,120,120,0.4);
+  border: 1px solid rgba(60,60,60,0.4);
+  opacity: 0;
+  -moz-transition: opacity 0.5s ease;
+}
+
+.control_panel:hover {
+  opacity: 1;
+}
+
+.control_panel > nav {
+  border: 1px solid black;
+  position: absolute;
+  width: 50%;
+  height: 80%;
+  left: 50%;
+  top: 10%;
+  margin-left: -25%;
+}
+
+.control_panel > nav > .fwd_button {
+  border: 1px solid black;
+  width: 20%;
+  height: 100%;
+  position: absolute;
+  right: 0%;
+  top: 0;
+}
+
+.control_panel > nav > .back_button {
+  border: 1px solid black;
+  width: 20%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
