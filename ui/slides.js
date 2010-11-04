@@ -73,11 +73,13 @@ S5.prototype = {
       if (this.currentSlide !== null) {
         if (dir === 1) {
           slide.removeClass('next');
+          this.currentSlide.removeClass('active');
           if (i>1)
             this.slides[i-2].removeClass('prev');
         }
         if (dir === -1) {
           slide.removeClass('prev');
+          this.currentSlide.removeClass('active');
           if (i<this.slides.length-2)
             this.slides[i+2].removeClass('next');
         }
@@ -87,8 +89,8 @@ S5.prototype = {
       if (i>0)
         this.slides[i-1].addClass('prev');
       location.hash='slide'+i;
+      this.slides[i].addClass('active');
     }
-    this.transition.transitToSlide(i, this.s5);
     this.currentSlide = this.slides[i];
   },
   processSlides: function() {
@@ -100,7 +102,7 @@ S5.prototype = {
     for (var i in this.slides) {
       this.slides[i].addClass('transition_'+name);
     }
-    this.transition.prepare(this.slides);
+    this.transition.prepare(this);
   },
   setParams: function() {
     var allMetas = document.getElementsByTagName('meta');
@@ -290,7 +292,7 @@ Element.prototype = {
 
 var Slide = function(node, i, s5) {
   Element.call(this, node, i, s5, this, s5, false);
-  //this.node.setAttribute('id', 'slide'+i);
+  this.node.setAttribute('id', 'slide'+i);
   this.process();
 }
 
