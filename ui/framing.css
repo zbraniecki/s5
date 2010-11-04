@@ -5,17 +5,17 @@
 
 .slide.master_ts {
   text-align: center;
+  font-size:100%;
 }
 
 .slide.master_ts > h1 {
   width: 80%;
   height: 40%;
+  font-size: 2em;
   margin: 0 auto;
-  margin-top: 2em;
-    display: -moz-box;
-    -moz-box-pack: center;
-    -moz-box-align: end;
-
+  display: -moz-box;
+  -moz-box-pack: center;
+  -moz-box-align: end;
 }
 
 .slide.master_ts > h2 {
@@ -37,13 +37,14 @@
 /* Title & Bullets */
 
 .slide.master_tb {
+  font-size:100%;
 }
 
 .slide.master_tb > h1 {
   width: 80%;
   margin: 0 auto;
-  margin-top: 0.2em;
   height: 20%;
+  padding-top: 0.2em;
 }
 
 .slide.master_tb > ul {

@@ -5,30 +5,85 @@
 }
 
 
-.transition_dissolve.active {
+.transition_dissolve:target {
     opacity: 1.0;
 }
 
-.transition_push {
-  left: -100%; 
-  -moz-transition: left 1s ease;
-  z-index: 3;
-}
-
-.transition_push.active {
+ol.presentation {
+  position: absolute;
   left: 0%;
-  z-index: 5; 
+  top: 0;
+  width: 100%;
+  height: 100%;
+  -moz-transition: margin-left 1s ease;
 }
 
-.transition_push.prev {
-  left: 100%;
+.slide.transition_push {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+
+
+/*
+body {
+  background-color: black;
+}
+*/
+
+.slide.transition_slide {
+  display: block;
+  background-color: white;
+}
+
+.transition_slide:first-child {
+  width: 50%;
+  height: 50%;
+  position: fixed;
   z-index: 4;
-  display: block;
+  font-size: 50%;
 }
 
-.transition_push.next {
-  left: -100%;
-  z-index: 6;
-  display: block;
+.transition_slide {
+  position: fixed;
+  top: 25%;
+  left: 110%;
+  width: 50%;
+  height: 50%;
+  z-index: 3;
+  font-size: 50%;
 }
 
+.slide.transition_slide.next {
+  -moz-transition: width 1s ease, height 1s ease, top 1s ease, font-size 1s ease, margin-left 1s ease, left 1s ease 1s;
+  top: 25%;
+  height: 50%;
+  width: 50%;
+  left: 110%;
+  margin-left: -25%;
+  z-index: 4;
+  font-size: 50%;
+}
+
+.slide.transition_slide:target {
+  -moz-transition: width 1s ease 2s, height 1s ease 2s, top 1s ease 2s, font-size 1s ease 2s, margin-left 1s ease 2s, left 1s ease 1s;
+  height: 100%;
+  width: 100%;
+  left: 50%;
+  top: 0%;
+  margin-left: -50%;
+  font-size: 100%;
+  z-index: 5;
+}
+
+.transition_slide.prev {
+  -moz-transition: width 1s ease, height 1s ease, top 1s ease, margin-left 1s ease, font-size 1s ease, left 1s ease 1s;
+  width: 50%;
+  left: -10%;
+  top: 25%;
+  height: 50%;
+  margin-left: -25%;
+  font-size: 50%;
+
+}

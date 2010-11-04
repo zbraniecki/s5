@@ -3,7 +3,8 @@ var ControlUI = function(s5) {
 }
 
 ControlUI.prototype = {
-  node: null, 
+  node: null,
+  selectorNode: null, 
   bindInput: function() {
     var self = this;
   },
@@ -24,6 +25,10 @@ ControlUI.prototype = {
     }, false);
     nav.appendChild(backButton);
     nav.appendChild(fwdButton);
+
+    var selector = document.createElement('select');
+    this.selectorNode = selector;
+    nav.appendChild(selector);
     panel.appendChild(nav);
 
     var debugButton = document.createElement('button');
@@ -40,5 +45,12 @@ ControlUI.prototype = {
       e.stopPropagation();
       e.preventDefault();
     }, false);
+  },
+  setSlideList: function(slides) {
+    for(var i=0;i<slides.length;i++) {
+      var option = document.createElement('option');
+      option.innerHTML="foo";
+      this.selector.appendChild(option);
+    }
   }
 }

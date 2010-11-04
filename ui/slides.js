@@ -12,8 +12,10 @@ S5.prototype = {
   setCurrentStep: function(node) {
     if (this.currentStep)
       this.currentStep.removeClass('current')
-    node.addClass('current')
-    this.currentStep = node;
+    if (node) {
+      node.addClass('current')
+      this.currentStep = node;
+    }
   },
   bindInput: function() {
     var self = this;
@@ -65,10 +67,10 @@ S5.prototype = {
   },
   transitToSlide: function(i, dir) {
     var slide = this.slides[i];
+    //slide.reset();
     this.transition.transitToSlide(i, this);
     if (this.transition.defaultAction) {
       if (this.currentSlide !== null) {
-        this.currentSlide.removeClass('active');
         if (dir === 1) {
           slide.removeClass('next');
           if (i>1)
@@ -80,12 +82,13 @@ S5.prototype = {
             this.slides[i+2].removeClass('next');
         }
       }
-      slide.addClass('active');
       if (i<this.slides.length-1)
         this.slides[i+1].addClass('next');
       if (i>0)
         this.slides[i-1].addClass('prev');
+      location.hash='slide'+i;
     }
+    this.transition.transitToSlide(i, this.s5);
     this.currentSlide = this.slides[i];
   },
   processSlides: function() {
@@ -97,6 +100,7 @@ S5.prototype = {
     for (var i in this.slides) {
       this.slides[i].addClass('transition_'+name);
     }
+    this.transition.prepare(this.slides);
   },
   setParams: function() {
     var allMetas = document.getElementsByTagName('meta');
@@ -138,6 +142,7 @@ S5.prototype = {
     this.convert(this.node);
     this.setParams();
     this.processSlides();
+    //this.controlIU;
     this.setDefaultTransitionForSlide(this.transition.name);
     this.transitToNextSlide();
   },
@@ -255,6 +260,14 @@ Element.prototype = {
     } else
       return false;
   },
+  reset: function() {
+    for (var i=0;i<this.steps.length;i++) {
+      this.steps[i].removeClass('active');
+      this.steps[i].reset();
+    }
+    this.currentStep=-1;
+    this.parent.setCurrentStep();
+  },
   process: function() {
     if(!this.node)return;
     var nodes = this.node.children;
@@ -277,7 +290,7 @@ Element.prototype = {
 
 var Slide = function(node, i, s5) {
   Element.call(this, node, i, s5, this, s5, false);
-  this.node.setAttribute('id', 'slide'+i);
+  //this.node.setAttribute('id', 'slide'+i);
   this.process();
 }
 
