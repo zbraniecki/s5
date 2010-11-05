@@ -9,6 +9,7 @@ S5.prototype = {
   effect: null,
   node: null,
   controls: null,
+  presenter: null,
 
   setCurrentStep: function(node) {
     if (this.currentStep)
@@ -47,6 +48,11 @@ S5.prototype = {
     }, false);
   },
   goFwd: function() {
+
+   //var canvas = document.getElementById("c");  
+   //var ctx = canvas.getContext("2d");  
+   //ctx.drawWindow(window, 0, 0, 100, 200, "rgb(255,255,255)"); 
+   // return true;
     if (!this.currentSlide.goFwd())
       this.transitToNextSlide();
   },
@@ -108,7 +114,23 @@ S5.prototype = {
     var allMetas = document.getElementsByTagName('meta');
     for(var i in allMetas) {
       switch (allMetas[i].name) {
-        case 'defaultView':
+        case 'view':
+          var str = allMetas[i].content;
+          switch (str) {
+            case 'presenter':
+              active = 'presenter_slidesheet';
+              break;
+            case 'slides':
+              active = 'slides_slidesheet';
+              break;
+            default:
+              active = 'slides_slidesheet';
+          }
+          if (active=='presenter_slidesheet') {
+            this.presenter = true;
+          } else {
+            document.getElementById('presenter_slidesheet').disabled=true;
+          }
           break;
         case 'transition':
           var str = allMetas[i].content;
@@ -124,8 +146,7 @@ S5.prototype = {
           break;
         case 'controls':
           var str = allMetas[i].content;
-          this.controls = new ControlUI(this);
-          this.controls.inject(document.getElementsByClassName('presentation')[0]);
+          this.controls = true;
           break;
         case 'controlVis':
           break;
@@ -133,7 +154,7 @@ S5.prototype = {
     }
   },
   setMode: function() {
-    var slides = document.getElementById('slideProj');
+    var slides = document.getElementById('slides_slidesheet');
     slides.setAttribute('media','screen');
     slides.disabled=false;
   },
@@ -144,8 +165,16 @@ S5.prototype = {
     this.convert(this.node);
     this.setParams();
     this.processSlides();
-    this.controls.setSlideList(this);
+    if (this.controls && !this.presenter) {
+      this.controls = new ControlUI(this);
+      this.controls.inject(document.getElementsByClassName('presentation')[0]);
+      this.controls.setSlideList(this);
+    }
     this.setDefaultTransitionForSlide(this.transition.name);
+    if (this.presenter) {
+      this.presenter = new PresenterScreen();
+      this.presenter.initialize();
+    }
     this.transitToNextSlide();
   },
   boot: function() {
@@ -292,7 +321,7 @@ Element.prototype = {
 
 var Slide = function(node, i, s5) {
   Element.call(this, node, i, s5, this, s5, false);
-  this.node.setAttribute('id', 'real_slide'+i);
+  this.node.classList.add('real_slide'+i);
   this.process();
 }
 

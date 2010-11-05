@@ -1,0 +1,4 @@
+@import url(core.css); /* required to make the slide show run at all */
+@import url(../slides/framing.css); /* sets basic placement and size of slide components */
+@import url(../../effects/transitions.css); /* basic transitions */
+@import url(../../effects/effects.css); /* basic effects */

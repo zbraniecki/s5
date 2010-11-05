@@ -1,0 +1,42 @@
+body {
+  background-color: black;
+  color: white;
+}
+
+ol#presentation {
+  background-color: white;
+  color: black;
+  top: -200%;
+  left: -200%;
+  width: 50%;
+  height: 50%;
+  position: absolute;
+}
+
+.currentSlide, .nextSlide {
+  background-color: white;
+  position: absolute;
+  z-index: 10;
+  color: black;
+}
+
+.currentSlide {
+  top: 10%;
+  left: 5%;
+  width: 50%;
+  height: 50%;
+  background: -moz-element(#presentation);
+}
+
+.nextSlide {
+  top: 10%;
+  right: 10%;
+  width: 30%;
+  height: 30%;
+}
+
+#c {
+  width: 300px;
+  height: 300px;
+  border: 1px solid white;
+}
