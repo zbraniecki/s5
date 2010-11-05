@@ -17,7 +17,7 @@ h1 {
   height: 100%;
 }
 
-.slide:target {
+.slide:target, .slide.active {
   display: block;
 }
 

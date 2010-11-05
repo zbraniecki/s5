@@ -8,6 +8,7 @@ S5.prototype = {
   transition: null,
   effect: null,
   node: null,
+  controls: null,
 
   setCurrentStep: function(node) {
     if (this.currentStep)
@@ -71,15 +72,14 @@ S5.prototype = {
     this.transition.transitToSlide(i, this);
     if (this.transition.defaultAction) {
       if (this.currentSlide !== null) {
+          this.currentSlide.removeClass('active');
         if (dir === 1) {
           slide.removeClass('next');
-          this.currentSlide.removeClass('active');
           if (i>1)
             this.slides[i-2].removeClass('prev');
         }
         if (dir === -1) {
           slide.removeClass('prev');
-          this.currentSlide.removeClass('active');
           if (i<this.slides.length-2)
             this.slides[i+2].removeClass('next');
         }
@@ -144,7 +144,7 @@ S5.prototype = {
     this.convert(this.node);
     this.setParams();
     this.processSlides();
-    //this.controlIU;
+    this.controls.setSlideList(this);
     this.setDefaultTransitionForSlide(this.transition.name);
     this.transitToNextSlide();
   },
@@ -292,7 +292,7 @@ Element.prototype = {
 
 var Slide = function(node, i, s5) {
   Element.call(this, node, i, s5, this, s5, false);
-  this.node.setAttribute('id', 'slide'+i);
+  this.node.setAttribute('id', 'real_slide'+i);
   this.process();
 }
 

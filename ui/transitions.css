@@ -25,10 +25,21 @@
   background-color: white;
   margin-left: 0%;
   z-index: 3;
-  -moz-box-shadow: #244766 10px 10px 10px;
   font-size: 50%;
   -moz-transition: height 1s ease, width 1s ease, top 1s ease, width 1s ease, margin-left 1s ease, font-size 1s ease;
 }
+
+.reflection {
+  width: 100%;
+  height: 50%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  -moz-transform: scaleY(-1);
+  mask: url(s5.svg#reflection-mask);
+  z-index: 100;
+}
+
 
 .slide.transition_slide.active {
   -moz-transition: height 1s ease 2s, width 1s ease 2s, top 1s ease 2s, width 1s ease 2s, margin-left 1s ease 2s, font-size 1s ease 2s;
@@ -40,4 +51,15 @@
   font-size: 100%;
 }
 
+.slide.transition_cube {
+  height: 50%;
+  width: 50%;
+  top: 25%;
+  left: 25%;
+  display: block;
+  background-color: white;
+  margin-left: 0%;
+  z-index: 3;
+  font-size: 50%;
+}
 

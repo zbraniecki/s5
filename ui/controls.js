@@ -28,6 +28,11 @@ ControlUI.prototype = {
 
     var selector = document.createElement('select');
     this.selectorNode = selector;
+    selector.addEventListener('change', function(e) {
+      var slideNum = self.selectorNode.options[self.selectorNode.selectedIndex].value;
+      self.s5.transitToSlide(parseInt(slideNum));
+    }, false);
+
     nav.appendChild(selector);
     panel.appendChild(nav);
 
@@ -46,11 +51,13 @@ ControlUI.prototype = {
       e.preventDefault();
     }, false);
   },
-  setSlideList: function(slides) {
+  setSlideList: function(s5) {
+    var slides = s5.slides;
     for(var i=0;i<slides.length;i++) {
       var option = document.createElement('option');
-      option.innerHTML="foo";
-      this.selector.appendChild(option);
+      option.value = i;
+      option.innerHTML=slides[i].node.getElementsByTagName('h1')[0].textContent;
+      this.selectorNode.appendChild(option);
     }
   }
 }

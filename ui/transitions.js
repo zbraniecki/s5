@@ -25,7 +25,6 @@ S5.transitions.Push = {
   prepare: function(s5) {
     for(var i=0;i<s5.slides.length;i++) {
       s5.slides[i].node.style.left = (i*100)+'%';
-      s5.slides[i].node.removeAttribute('id');
     }
   }
 }
@@ -41,7 +40,23 @@ S5.transitions.Slide = {
     document.body.style.backgroundColor = 'black';
     for(var i=0;i<s5.slides.length;i++) {
       s5.slides[i].node.style.left = (25+(i*50)+(i*10))+'%';
-      s5.slides[i].node.removeAttribute('id');
+      var refl = document.createElement('div');
+      refl.setAttribute('class', 'reflection');
+      refl.style.background="-moz-element(#real_slide"+i+") bottom left no-repeat";
+      s5.slides[i].node.appendChild(refl);
     }
   }
 }
+
+S5.transitions.Cube = {
+  defaultAction: true,
+  name: 'cube',
+  transitToSlide: function(i, s5) {
+  },
+  prepare: function(s5) {
+    document.body.style.backgroundColor = 'black';
+    for(var i=0;i<s5.slides.length;i++) {
+    }
+  }
+}
+
