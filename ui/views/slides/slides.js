@@ -1,5 +1,9 @@
 var S5 = function() {
+  this.effects = {};
 }
+
+S5.transitions = {};
+S5.themes = {};
 
 S5.prototype = {
   currentSlide: null,
@@ -7,9 +11,11 @@ S5.prototype = {
   currentStep: null,
   transition: null,
   effect: null,
+  theme: null,
   node: null,
   controls: null,
   presenter: null,
+  effects: null,
 
   setCurrentStep: function(node) {
     if (this.currentStep)
@@ -48,11 +54,6 @@ S5.prototype = {
     }, false);
   },
   goFwd: function() {
-
-   //var canvas = document.getElementById("c");  
-   //var ctx = canvas.getContext("2d");  
-   //ctx.drawWindow(window, 0, 0, 100, 200, "rgb(255,255,255)"); 
-   // return true;
     if (!this.currentSlide.goFwd())
       this.transitToNextSlide();
   },
@@ -108,7 +109,18 @@ S5.prototype = {
     for (var i in this.slides) {
       this.slides[i].addClass('transition_'+name);
     }
+    this.node.classList.add('transition_'+name);
     this.transition.prepare(this);
+  },
+  setTheme: function() {
+    if (this.transition.theme_style=='shared') {
+      var node = document.body;
+    } else {
+      for (var i=0;i<this.slides.length;i++) {
+        var node = this.slides[i].node;
+        this.theme.init(node);
+      }
+    }
   },
   setParams: function() {
     var allMetas = document.getElementsByTagName('meta');
@@ -150,6 +162,10 @@ S5.prototype = {
           break;
         case 'controlVis':
           break;
+        case 'theme':
+          var str = allMetas[i].content;
+          this.theme = new S5.themes[str]();
+          break;
       }
     }
   },
@@ -171,6 +187,7 @@ S5.prototype = {
       this.controls.setSlideList(this);
     }
     this.setDefaultTransitionForSlide(this.transition.name);
+    this.setTheme();
     if (this.presenter) {
       this.presenter = new PresenterScreen();
       this.presenter.initialize();
@@ -198,7 +215,6 @@ S5.prototype = {
   }
 }
 
-S5.transitions = {}
 
 var Element = function(node, i, parent, slide, s5, proc) {
   this.node = node;
@@ -321,7 +337,8 @@ Element.prototype = {
 
 var Slide = function(node, i, s5) {
   Element.call(this, node, i, s5, this, s5, false);
-  this.node.classList.add('real_slide'+i);
+  this.node.setAttribute('id', 'real_slide'+i);
+  this.node.classList.add('slide'+i);
   this.process();
 }
 

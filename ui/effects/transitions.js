@@ -1,6 +1,7 @@
 S5.transitions.Basic = {
   defaultAction: true,
   name: 'basic',
+  theme_type: 'shared',
   transitToSlide: function(i, s5) {
   },
   prepare: function(s5) {
@@ -10,6 +11,7 @@ S5.transitions.Basic = {
 S5.transitions.Dissolve = {
   defaultAction: true,
   name: 'dissolve',
+  theme_type: 'shared',
   transitToSlide: function(i, s5) {
   },
   prepare: function(s5) {
@@ -19,6 +21,7 @@ S5.transitions.Dissolve = {
 S5.transitions.Push = {
   defaultAction: true,
   name: 'push',
+  theme_type: 'shared',
   transitToSlide: function(i, s5) {
     s5.node.style.marginLeft='-'+(i*100)+'%';
   },
@@ -33,6 +36,7 @@ S5.transitions.Push = {
 S5.transitions.Slide = {
   defaultAction: true,
   name: 'slide',
+  theme_type: 'individual',
   transitToSlide: function(i, s5) {
     s5.node.style.marginLeft='-'+(i*50+i*10)+'%';
   },
@@ -51,6 +55,7 @@ S5.transitions.Slide = {
 S5.transitions.Cube = {
   defaultAction: true,
   name: 'cube',
+  theme_type: 'shared',
   transitToSlide: function(i, s5) {
   },
   prepare: function(s5) {

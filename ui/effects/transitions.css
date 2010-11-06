@@ -9,6 +9,14 @@
     opacity: 1.0;
 }
 
+ol.presentation.transition_slide {
+  -moz-transition: margin-left 1s ease 1s;
+}
+
+ol.presentation.transition_push {
+  -moz-transition: margin-left 1s ease;
+}
+
 .slide.transition_push {
   height: 100%;
   width: 100%;
