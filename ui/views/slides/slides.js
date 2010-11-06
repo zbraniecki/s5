@@ -113,12 +113,24 @@ S5.prototype = {
     this.transition.prepare(this);
   },
   setTheme: function() {
-    if (this.transition.theme_style=='shared') {
+    if (this.transition.theme_type=='shared') {
       var node = document.body;
+      this.theme.init(node);
     } else {
       for (var i=0;i<this.slides.length;i++) {
         var node = this.slides[i].node;
         this.theme.init(node);
+      }
+    }
+  },
+  setMasters: function() {
+    for (var i in this.slides) {
+      var slide = this.slides[i];
+      if (slide.getClassOfType('master')==false) {
+        if (i==0)
+          slide.addClass('master_ts');
+        else
+          slide.addClass('master_tb');
       }
     }
   },
@@ -188,6 +200,7 @@ S5.prototype = {
     }
     this.setDefaultTransitionForSlide(this.transition.name);
     this.setTheme();
+    this.setMasters();
     if (this.presenter) {
       this.presenter = new PresenterScreen();
       this.presenter.initialize();
@@ -250,6 +263,20 @@ Element.prototype = {
   },
   hasClass: function(className) {
     return this.node.classList.contains(className);
+  },
+  getClassOfType: function(type) {
+    for(var i=0;i<this.node.classList.length;i++) {
+      var class = this.node.classList[i]
+      var delim = class.indexOf('_');
+      if (delim!==-1) {
+        var prefix = class.substr(0,delim);
+        if (type==prefix) {
+          var postfix = class.substr(delim+1);
+          return postfix;
+        }
+      }
+    }
+    return false;
   },
   setCurrentStep: function() {
     if (this.currentStep>-1) {
